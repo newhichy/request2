@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DNS Request Tools</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0d0f14;
+    --surface: #13161e;
+    --surface2: #1a1e28;
+    --border: #252a38;
+    --border2: #2e3448;
+    --teal: #00c9b1;
+    --teal-dim: #009b8d;
+    --teal-glow: rgba(0,201,177,0.12);
+    --amber: #f0a070;
+    --blue: #7eb8f0;
+    --purple: #a090e8;
+    --orange: #ffa028;
+    --text: #e8edf8;
+    --muted: #6b748a;
+    --muted2: #8891a8;
+    --domain: #7ec8c0;
+    --sub: #f0a070;
+    --error: #e05a5a;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,201,177,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,201,177,0.025) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page {
+    position: relative;
+    z-index: 1;
+    max-width: 940px;
+    margin: 0 auto;
+    padding: 2.5rem 2rem 5rem;
+  }
+
+  /* Header */
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.75rem;
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .logo { display: flex; align-items: center; gap: 12px; }
+
+  .logo-icon {
+    width: 40px; height: 40px;
+    border: 1.5px solid var(--teal);
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .logo-icon svg { width: 22px; height: 22px; }
+
+  h1 { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; }
+  h1 span { color: var(--teal); }
+
+  .tagline {
+    font-size: 12px;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* Tabs */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 2rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 4px;
+  }
+
+  .tab-btn {
+    flex: 1;
+    padding: 10px 16px;
+    background: transparent;
+    border: none;
+    border-radius: 7px;
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--muted2);
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    letter-spacing: 0.3px;
+  }
+
+  .tab-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+  .tab-btn:hover { color: var(--text); background: var(--surface2); }
+
+  .tab-btn.active { background: var(--surface2); color: var(--teal); border: 1px solid var(--border2); }
+
+  .tab-btn.active-a { color: var(--amber); border-color: rgba(240,160,112,0.3); }
+  .tab-btn.active-mx { color: var(--purple); border-color: rgba(160,144,232,0.3); }
+  .tab-btn.active-bucket { color: var(--orange); border-color: rgba(255,160,40,0.3); }
+  .tab-btn.active-joiner { color: #5ec4f0; border-color: rgba(94,196,240,0.3); }
+
+  /* Panels */
+  .panel { display: none; animation: fadeUp 0.25s ease; }
+  .panel.active { display: block; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Section title */
+  .section-title {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-title .pill {
+    font-size: 10px;
+    padding: 2px 9px;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0;
+    font-weight: 400;
+  }
+
+  .pill-spf  { background: var(--teal-glow); color: var(--teal); border: 1px solid rgba(0,201,177,0.25); }
+  .pill-a    { background: rgba(240,160,112,0.1); color: var(--amber); border: 1px solid rgba(240,160,112,0.25); }
+  .pill-mx   { background: rgba(160,144,232,0.1); color: var(--purple); border: 1px solid rgba(160,144,232,0.25); }
+
+  /* Form */
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.1rem;
+    margin-bottom: 1.1rem;
+  }
+
+  @media (max-width: 580px) { .form-grid { grid-template-columns: 1fr; } }
+
+  .field { display: flex; flex-direction: column; gap: 7px; }
+  .field.full { grid-column: 1 / -1; }
+
+  label {
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: var(--muted2);
+  }
+
+  label .hint {
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--muted);
+    margin-left: 6px;
+    font-size: 10.5px;
+  }
+
+  textarea {
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    line-height: 1.7;
+    padding: 11px 13px;
+    resize: vertical;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    width: 100%;
+  }
+
+  textarea::placeholder { color: var(--muted); opacity: 0.55; }
+  textarea:focus { outline: none; }
+
+  textarea.focus-teal:focus   { border-color: var(--teal-dim); box-shadow: 0 0 0 3px var(--teal-glow); }
+  textarea.focus-amber:focus  { border-color: #c07840; box-shadow: 0 0 0 3px rgba(240,160,112,0.1); }
+  textarea.focus-purple:focus { border-color: #7060b8; box-shadow: 0 0 0 3px rgba(160,144,232,0.1); }
+  textarea.focus-orange:focus { border-color: #cc7a10; box-shadow: 0 0 0 3px rgba(255,160,40,0.1); }
+  textarea.focus-joiner:focus { border-color: #2a90b8; box-shadow: 0 0 0 3px rgba(94,196,240,0.1); }
+
+  .num-input.focus-joiner:focus { border-color: #2a90b8; box-shadow: 0 0 0 3px rgba(94,196,240,0.1); }
+
+  input[type="text"].num-input {
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px;
+    padding: 11px 13px;
+    width: 100%;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    letter-spacing: 2px;
+  }
+  input[type="text"].num-input:focus { outline: none; }
+
+  .preset-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    color: var(--muted2);
+    border-radius: 6px;
+    padding: 5px 12px;
+    font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .preset-btn:hover { border-color: #2a90b8; color: #5ec4f0; background: rgba(94,196,240,0.08); }
+
+  .btn-joiner { background: #5ec4f0; color: #071420; }
+
+  .num-input {
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    padding: 11px 13px;
+    width: 100%;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .num-input:focus { outline: none; }
+  .num-input.focus-orange:focus { border-color: #cc7a10; box-shadow: 0 0 0 3px rgba(255,160,40,0.1); }
+
+  .cb-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--text);
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .cb-label input[type="checkbox"] {
+    width: 16px; height: 16px;
+    accent-color: var(--orange);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .btn-bucket { background: var(--orange); color: #1a0e00; }
+
+  /* Buttons */
+  .btn-generate {
+    width: 100%;
+    padding: 14px 24px;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    cursor: pointer;
+    transition: filter 0.2s, transform 0.1s;
+    margin-top: 0.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .btn-generate:active { transform: scale(0.99); }
+  .btn-generate:hover { filter: brightness(1.1); }
+  .btn-generate svg { width: 15px; height: 15px; }
+
+  .btn-spf  { background: var(--teal); color: #0a0c10; }
+  .btn-a    { background: var(--amber); color: #1a0e06; }
+  .btn-mx   { background: var(--purple); color: #0e0b18; }
+
+  /* Error */
+  .error-msg {
+    display: none;
+    background: rgba(224,90,90,0.08);
+    border: 1px solid rgba(224,90,90,0.3);
+    border-radius: 8px;
+    padding: 9px 13px;
+    font-size: 12px;
+    color: var(--error);
+    font-family: 'JetBrains Mono', monospace;
+    margin-top: 0.6rem;
+  }
+  .error-msg.visible { display: block; }
+
+  /* Output */
+  .output-section {
+    margin-top: 1.75rem;
+    display: none;
+    animation: fadeUp 0.25s ease;
+  }
+  .output-section.visible { display: block; }
+
+  .output-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .output-title {
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: var(--muted2);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .record-count {
+    font-size: 10.5px;
+    font-family: 'JetBrains Mono', monospace;
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+
+  .rc-spf  { background: var(--teal-glow); border: 1px solid rgba(0,201,177,0.2); color: var(--teal); }
+  .rc-a    { background: rgba(240,160,112,0.1); border: 1px solid rgba(240,160,112,0.2); color: var(--amber); }
+  .rc-mx   { background: rgba(160,144,232,0.1); border: 1px solid rgba(160,144,232,0.2); color: var(--purple); }
+
+  .btn-copy {
+    background: transparent;
+    border: 1px solid var(--border2);
+    color: var(--muted2);
+    border-radius: 6px;
+    padding: 6px 13px;
+    font-size: 11.5px;
+    font-family: 'JetBrains Mono', monospace;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .btn-copy:hover { border-color: var(--teal-dim); color: var(--teal); background: var(--teal-glow); }
+  .btn-copy.copied { border-color: var(--teal); color: var(--teal); }
+  .btn-copy svg { width: 12px; height: 12px; }
+
+  .records-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .record-row {
+    display: flex;
+    align-items: flex-start;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+  }
+  .record-row:last-child { border-bottom: none; }
+  .record-row:hover { background: var(--surface2); }
+
+  .record-index {
+    min-width: 34px;
+    padding: 12px 0 12px 13px;
+    font-size: 10.5px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--muted);
+    user-select: none;
+    flex-shrink: 0;
+  }
+
+  .record-text {
+    padding: 11px 12px 11px 7px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    line-height: 1.7;
+    word-break: break-all;
+    flex: 1;
+    color: #c0cce0;
+  }
+
+  .p-domain { color: var(--domain); }
+  .p-sub    { color: var(--sub); }
+  .p-type   { color: var(--muted2); }
+  .p-ip     { color: #a8c4f0; }
+  .p-all    { color: #e07070; }
+  .p-aip    { color: #f0c090; }
+  .p-mxip   { color: #c0a8f0; }
+  .p-key    { color: #80b8d0; }
+
+  .copy-row-btn {
+    flex-shrink: 0;
+    width: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--muted);
+    background: transparent;
+    border: none;
+    transition: color 0.15s;
+    padding: 11px 9px;
+    align-self: stretch;
+  }
+  .copy-row-btn:hover { color: var(--teal); }
+  .copy-row-btn svg { width: 12px; height: 12px; }
+
+  /* Divider between tools reference */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 2.5rem 0;
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <header>
+    <div class="logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 22 22" fill="none">
+          <path d="M3 5h16M3 11h10M3 17h6" stroke="#00c9b1" stroke-width="1.8" stroke-linecap="round"/>
+          <circle cx="17" cy="15" r="3.5" stroke="#00c9b1" stroke-width="1.5"/>
+          <path d="M19.5 17.5L21 19" stroke="#00c9b1" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div>
+        <h1>Requests <span>Tools</span></h1>
+      </div>
+    </div>
+    <div class="tagline">SPF · A Records · MX Records</div>
+  </header>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab-btn active" id="tab-spf" onclick="switchTab('spf')">
+      <svg viewBox="0 0 14 14" fill="none"><path d="M2 3h10M2 7h6M2 11h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      SPF Records
+    </button>
+    <button class="tab-btn" id="tab-a" onclick="switchTab('a')">
+      <svg viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M4.5 9.5l2.5-5 2.5 5M5.5 7.5h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+      A Records
+    </button>
+    <button class="tab-btn" id="tab-mx" onclick="switchTab('mx')">
+      <svg viewBox="0 0 14 14" fill="none"><rect x="2" y="3.5" width="10" height="7" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M2 5l5 4 5-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      MX Records
+    </button>
+    <button class="tab-btn" id="tab-bucket" onclick="switchTab('bucket')">
+      <svg viewBox="0 0 14 14" fill="none"><rect x="2" y="4" width="10" height="7" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M5 4V3a2 2 0 014 0v1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+      Buckets
+    </button>
+    <button class="tab-btn" id="tab-joiner" onclick="switchTab('joiner')">
+      <svg viewBox="0 0 14 14" fill="none"><circle cx="3" cy="4" r="1.5" stroke="currentColor" stroke-width="1.3"/><circle cx="3" cy="7" r="1.5" stroke="currentColor" stroke-width="1.3"/><circle cx="3" cy="10" r="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M4.5 7h5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><circle cx="11" cy="7" r="1.5" stroke="currentColor" stroke-width="1.3"/></svg>
+      IP Joiner
+    </button>
+  </div>
+
+  <!-- SPF Panel -->
+  <div class="panel active" id="panel-spf">
+    <div class="form-grid">
+      <div class="field">
+        <label>Domains <span class="hint">one per line</span></label>
+        <textarea id="spf-domains" class="focus-teal" rows="6" placeholder="ff.com&#10;co.com&#10;example.net"></textarea>
+      </div>
+      <div class="field">
+        <label>Subdomains <span class="hint">paired by line</span></label>
+        <textarea id="spf-subs" class="focus-teal" rows="6" placeholder="fe.ff.com&#10;fe.co.com&#10;send.example.net"></textarea>
+      </div>
+      <div class="field full">
+        <label>IPs <span class="hint">all applied to every pair — one per line</span></label>
+        <textarea id="spf-ips" class="focus-teal" rows="6" placeholder="185.44.78.232&#10;185.44.78.234&#10;107.158.134.174"></textarea>
+      </div>
+      <div class="field full">
+        <label>Include domains <span class="hint">optional</span></label>
+        <textarea id="spf-includes" class="focus-teal" rows="3" placeholder="sendgrid.net&#10;mailchimp.com"></textarea>
+      </div>
+    </div>
+    <button class="btn-generate btn-spf" onclick="generateSPF()">
+      <svg viewBox="0 0 16 16" fill="none"><path d="M2 8h12M9 4l5 4-5 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Generate SPF Records
+    </button>
+    <div class="error-msg" id="spf-err">✕ &nbsp;Domains and subdomains must have the same number of lines.</div>
+    <div class="output-section" id="spf-output">
+      <div class="output-header">
+        <div class="output-title">CSV output <span class="record-count rc-spf" id="spf-count">0 records</span></div>
+        <button class="btn-copy" id="spf-copy-btn" onclick="copyAll('spf-records','spf-copy-btn')">
+          <svg viewBox="0 0 13 13" fill="none"><rect x="1" y="4" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M4 4V2.5A1.5 1.5 0 015.5 1H10.5A1.5 1.5 0 0112 2.5V7.5A1.5 1.5 0 0110.5 9H9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          Copy all
+        </button>
+      </div>
+      <div class="records-box" id="spf-records"></div>
+    </div>
+  </div>
+
+  <!-- A Records Panel -->
+  <div class="panel" id="panel-a">
+    <div class="form-grid">
+      <div class="field">
+        <label>Domains <span class="hint">one per line</span></label>
+        <textarea id="a-domains" class="focus-amber" rows="6" placeholder="ff.com&#10;co.com"></textarea>
+      </div>
+      <div class="field">
+        <label>Subdomains <span class="hint">paired by line</span></label>
+        <textarea id="a-subs" class="focus-amber" rows="6" placeholder="fe.ff.com&#10;fe.ss.com"></textarea>
+      </div>
+      <div class="field full">
+        <label>IPs <span class="hint">semicolon-separated in output — one per line</span></label>
+        <textarea id="a-ips" class="focus-amber" rows="6" placeholder="185.44.78.232&#10;185.44.78.234&#10;185.44.78.236"></textarea>
+      </div>
+    </div>
+    <button class="btn-generate btn-a" onclick="generateA()">
+      <svg viewBox="0 0 16 16" fill="none"><path d="M2 8h12M9 4l5 4-5 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Generate A Records
+    </button>
+    <div class="error-msg" id="a-err">✕ &nbsp;Domains and subdomains must have the same number of lines.</div>
+    <div class="output-section" id="a-output">
+      <div class="output-header">
+        <div class="output-title">CSV output <span class="record-count rc-a" id="a-count">0 records</span></div>
+        <button class="btn-copy" id="a-copy-btn" onclick="copyAll('a-records','a-copy-btn')">
+          <svg viewBox="0 0 13 13" fill="none"><rect x="1" y="4" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M4 4V2.5A1.5 1.5 0 015.5 1H10.5A1.5 1.5 0 0112 2.5V7.5A1.5 1.5 0 0110.5 9H9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          Copy all
+        </button>
+      </div>
+      <div class="records-box" id="a-records"></div>
+    </div>
+  </div>
+
+  <!-- MX Records Panel -->
+  <div class="panel" id="panel-mx">
+    <div class="form-grid">
+      <div class="field">
+        <label>Domains <span class="hint">one per line</span></label>
+        <textarea id="mx-domains" class="focus-purple" rows="6" placeholder="ff.com&#10;co.com"></textarea>
+      </div>
+      <div class="field">
+        <label>Subdomains <span class="hint">paired by line</span></label>
+        <textarea id="mx-subs" class="focus-purple" rows="6" placeholder="fe.ff.com&#10;fe.ss.com"></textarea>
+      </div>
+      <div class="field full">
+        <label>IPs <span class="hint">semicolon-separated in output — one per line</span></label>
+        <textarea id="mx-ips" class="focus-purple" rows="6" placeholder="185.44.78.232&#10;185.44.78.234&#10;185.44.78.236"></textarea>
+      </div>
+    </div>
+    <button class="btn-generate btn-mx" onclick="generateMX()">
+      <svg viewBox="0 0 16 16" fill="none"><path d="M2 8h12M9 4l5 4-5 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Generate MX Records
+    </button>
+    <div class="error-msg" id="mx-err">✕ &nbsp;Domains and subdomains must have the same number of lines.</div>
+    <div class="output-section" id="mx-output">
+      <div class="output-header">
+        <div class="output-title">CSV output <span class="record-count rc-mx" id="mx-count">0 records</span></div>
+        <button class="btn-copy" id="mx-copy-btn" onclick="copyAll('mx-records','mx-copy-btn')">
+          <svg viewBox="0 0 13 13" fill="none"><rect x="1" y="4" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M4 4V2.5A1.5 1.5 0 015.5 1H10.5A1.5 1.5 0 0112 2.5V7.5A1.5 1.5 0 0110.5 9H9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          Copy all
+        </button>
+      </div>
+      <div class="records-box" id="mx-records"></div>
+    </div>
+  </div>
+
+  <!-- Buckets Panel -->
+  <div class="panel" id="panel-bucket">
+    <div class="form-grid" style="grid-template-columns:1fr 1fr; margin-bottom:1.1rem;">
+      <div class="field">
+        <label>Characters length</label>
+        <input type="number" id="bucket-len" value="20" min="1" max="128" class="num-input focus-orange">
+      </div>
+      <div class="field">
+        <label>Buckets number</label>
+        <input type="number" id="bucket-num" value="5" min="1" max="500" class="num-input focus-orange">
+      </div>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:1.25rem;">
+      <label class="cb-label"><input type="checkbox" id="cb-lower" checked> Include lowercase letters (a-z)</label>
+      <label class="cb-label"><input type="checkbox" id="cb-upper"> Include uppercase letters (A-Z)</label>
+      <label class="cb-label"><input type="checkbox" id="cb-nums"> Include numbers (0-9)</label>
+    </div>
+    <button class="btn-generate btn-bucket" onclick="generateBuckets()">
+      <svg viewBox="0 0 16 16" fill="none"><path d="M8 2v8M5 7l3 3 3-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 12h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      Generate Random Buckets
+    </button>
+    <div class="error-msg" id="bucket-err">✕ &nbsp;Select at least one character type.</div>
+    <div style="margin-top:1.5rem;">
+      <div class="output-header">
+        <div class="output-title">Random buckets <span class="record-count" id="bucket-count" style="background:rgba(255,160,40,0.1);border:1px solid rgba(255,160,40,0.2);color:var(--orange);">0 generated</span></div>
+        <button class="btn-copy" id="bucket-copy-btn" onclick="copyBuckets()">
+          <svg viewBox="0 0 13 13" fill="none"><rect x="1" y="4" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M4 4V2.5A1.5 1.5 0 015.5 1H10.5A1.5 1.5 0 0112 2.5V7.5A1.5 1.5 0 0110.5 9H9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          Copy all
+        </button>
+      </div>
+      <textarea id="bucket-output" class="focus-orange" rows="8" readonly placeholder="Generated bucket names will appear here..." style="margin-top:10px; cursor:default; color:#c0cce0;"></textarea>
+    </div>
+  </div>
+
+  <!-- IP Joiner Panel -->
+  <div class="panel" id="panel-joiner">
+    <div class="form-grid" style="grid-template-columns:1fr 1fr; margin-bottom:1.1rem; align-items:start;">
+      <div class="field">
+        <label>IPs <span class="hint">one per line</span></label>
+        <textarea id="joiner-ips" class="focus-joiner" rows="12" placeholder="185.44.78.232&#10;185.44.78.234&#10;185.44.78.236&#10;185.44.78.238&#10;185.44.78.240"></textarea>
+      </div>
+      <div class="field">
+        <label>Separator <span class="hint">between IPs</span></label>
+        <input type="text" id="joiner-sep" value=";" class="num-input focus-joiner" placeholder="e.g.  ;  or  ,  or  |">
+        <div style="margin-top:10px;">
+          <label style="font-size:10.5px;letter-spacing:1.4px;font-weight:700;text-transform:uppercase;color:var(--muted2);margin-bottom:8px;display:block;">Quick presets</label>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;">
+            <button class="preset-btn" onclick="setSep(';')">;</button>
+            <button class="preset-btn" onclick="setSep(',')"> , </button>
+            <button class="preset-btn" onclick="setSep(' | ')"> | </button>
+            <button class="preset-btn" onclick="setSep(' ')">space</button>
+            <button class="preset-btn" onclick="setSep('\t')">tab</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="btn-generate btn-joiner" onclick="joinIPs()">
+      <svg viewBox="0 0 16 16" fill="none"><path d="M2 8h12M9 4l5 4-5 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Join IPs
+    </button>
+    <div class="error-msg" id="joiner-err">✕ &nbsp;No IPs to join.</div>
+    <div class="output-section visible" id="joiner-output" style="margin-top:1.5rem;">
+      <div class="output-header">
+        <div class="output-title">
+          Output
+          <span class="record-count" id="joiner-count" style="background:rgba(94,196,240,0.1);border:1px solid rgba(94,196,240,0.2);color:#5ec4f0;">0 IPs</span>
+        </div>
+        <button class="btn-copy" id="joiner-copy-btn" onclick="copyJoiner()">
+          <svg viewBox="0 0 13 13" fill="none"><rect x="1" y="4" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M4 4V2.5A1.5 1.5 0 015.5 1H10.5A1.5 1.5 0 0112 2.5V7.5A1.5 1.5 0 0110.5 9H9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          Copy
+        </button>
+      </div>
+      <textarea id="joiner-result" class="focus-joiner" rows="4" readonly placeholder="Joined IPs will appear here..." style="margin-top:10px; cursor:default; color:#c0cce0; resize:none;"></textarea>
+    </div>
+  </div>
+
+</div><!-- end .page -->
+
+<script>
+  const COPY_SVG = `<svg viewBox="0 0 13 13" fill="none"><rect x="1" y="4" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M4 4V2.5A1.5 1.5 0 015.5 1H10.5A1.5 1.5 0 0112 2.5V7.5A1.5 1.5 0 0110.5 9H9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>`;
+
+  function switchTab(name) {
+    ['spf','a','mx','bucket','joiner'].forEach(t => {
+      document.getElementById('panel-'+t).classList.toggle('active', t === name);
+      const btn = document.getElementById('tab-'+t);
+      btn.classList.remove('active','active-a','active-mx','active-bucket','active-joiner');
+    });
+    const btn = document.getElementById('tab-'+name);
+    if (name === 'spf') btn.classList.add('active');
+    else if (name === 'a') btn.classList.add('active','active-a');
+    else if (name === 'mx') btn.classList.add('active','active-mx');
+    else if (name === 'bucket') btn.classList.add('active','active-bucket');
+    else btn.classList.add('active','active-joiner');
+  }
+
+  function parse(id) {
+    return document.getElementById(id).value.trim().split('\n').map(s => s.trim()).filter(Boolean);
+  }
+
+  function esc(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function addRow(container, idx, csvText, htmlText) {
+    const row = document.createElement('div');
+    row.className = 'record-row';
+    row.dataset.csv = csvText;
+    row.innerHTML = `
+      <span class="record-index">${String(idx+1).padStart(2,'0')}</span>
+      <span class="record-text">${htmlText}</span>
+      <button class="copy-row-btn" title="Copy row" onclick="copyRow(this)">${COPY_SVG}</button>`;
+    container.appendChild(row);
+  }
+
+  function validate(domains, subs, errId, outputId) {
+    const errEl = document.getElementById(errId);
+    const outEl = document.getElementById(outputId);
+    if (domains.length !== subs.length) {
+      errEl.classList.add('visible');
+      outEl.classList.remove('visible');
+      return false;
+    }
+    errEl.classList.remove('visible');
+    return true;
+  }
+
+  /* ---- SPF ---- */
+  function generateSPF() {
+    const domains  = parse('spf-domains');
+    const subs     = parse('spf-subs');
+    const ips      = parse('spf-ips');
+    const includes = parse('spf-includes');
+    if (!validate(domains, subs, 'spf-err', 'spf-output')) return;
+
+    const ipParts = ips.map(ip => {
+      if (ip.startsWith('ip4:') || ip.startsWith('ip6:')) return ip;
+      return ip.includes(':') ? 'ip6:' + ip : 'ip4:' + ip;
+    });
+    const incParts = includes.map(i => i.startsWith('include:') ? i : 'include:' + i);
+    const spf = 'v=spf1 ' + [...ipParts, ...incParts].join(' ') + ' -all';
+
+    const colorSpf = spf
+      .replace(/(ip4:[^\s]+|ip6:[^\s]+)/g, '<span class="p-ip">$1</span>')
+      .replace(/(-all)/g, '<span class="p-all">$1</span>');
+
+    const box = document.getElementById('spf-records');
+    box.innerHTML = '';
+    domains.forEach((domain, i) => {
+      const sub = subs[i];
+      const csv = `${domain},${sub},TXT,"${spf}"`;
+      const html = `<span class="p-domain">${esc(domain)}</span>,<span class="p-sub">${esc(sub)}</span>,<span class="p-type">TXT</span>,"${colorSpf}"`;
+      addRow(box, i, csv, html);
+    });
+
+    document.getElementById('spf-count').textContent = `${domains.length} record${domains.length!==1?'s':''}`;
+    const out = document.getElementById('spf-output');
+    out.classList.add('visible');
+    out.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  /* ---- A Records ---- */
+  function generateA() {
+    const domains = parse('a-domains');
+    const subs    = parse('a-subs');
+    const ips     = parse('a-ips');
+    if (!validate(domains, subs, 'a-err', 'a-output')) return;
+
+    const ipStr = ips.join(';');
+
+    const box = document.getElementById('a-records');
+    box.innerHTML = '';
+    domains.forEach((domain, i) => {
+      const sub = subs[i];
+      const csv = `${domain},${sub},TXT,Arecords:${ipStr}`;
+      const colorIps = ips.map(ip => `<span class="p-aip">${esc(ip)}</span>`).join('<span style="color:var(--muted)">;</span>');
+      const html = `<span class="p-domain">${esc(domain)}</span>,<span class="p-sub">${esc(sub)}</span>,<span class="p-type">TXT</span>,<span class="p-key">Arecords:</span>${colorIps}`;
+      addRow(box, i, csv, html);
+    });
+
+    document.getElementById('a-count').textContent = `${domains.length} record${domains.length!==1?'s':''}`;
+    const out = document.getElementById('a-output');
+    out.classList.add('visible');
+    out.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  /* ---- MX Records ---- */
+  function generateMX() {
+    const domains = parse('mx-domains');
+    const subs    = parse('mx-subs');
+    const ips     = parse('mx-ips');
+    if (!validate(domains, subs, 'mx-err', 'mx-output')) return;
+
+    const ipStr = ips.join(';');
+
+    const box = document.getElementById('mx-records');
+    box.innerHTML = '';
+    domains.forEach((domain, i) => {
+      const sub = subs[i];
+      const csv = `${domain},${sub},TXT,MXrecords:${ipStr}`;
+      const colorIps = ips.map(ip => `<span class="p-mxip">${esc(ip)}</span>`).join('<span style="color:var(--muted)">;</span>');
+      const html = `<span class="p-domain">${esc(domain)}</span>,<span class="p-sub">${esc(sub)}</span>,<span class="p-type">TXT</span>,<span class="p-key">MXrecords:</span>${colorIps}`;
+      addRow(box, i, csv, html);
+    });
+
+    document.getElementById('mx-count').textContent = `${domains.length} record${domains.length!==1?'s':''}`;
+    const out = document.getElementById('mx-output');
+    out.classList.add('visible');
+    out.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  /* ---- Buckets ---- */
+  function generateBuckets() {
+    const len    = Math.max(1, parseInt(document.getElementById('bucket-len').value) || 20);
+    const num    = Math.max(1, parseInt(document.getElementById('bucket-num').value) || 5);
+    const lower  = document.getElementById('cb-lower').checked;
+    const upper  = document.getElementById('cb-upper').checked;
+    const nums   = document.getElementById('cb-nums').checked;
+    const errEl  = document.getElementById('bucket-err');
+
+    if (!lower && !upper && !nums) {
+      errEl.classList.add('visible');
+      return;
+    }
+    errEl.classList.remove('visible');
+
+    let charset = '';
+    if (lower) charset += 'abcdefghijklmnopqrstuvwxyz';
+    if (upper) charset += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    if (nums)  charset += '0123456789';
+
+    const buckets = [];
+    for (let i = 0; i < num; i++) {
+      let name = '';
+      for (let j = 0; j < len; j++) {
+        name += charset[Math.floor(Math.random() * charset.length)];
+      }
+      buckets.push(name);
+    }
+
+    document.getElementById('bucket-output').value = buckets.join('\n');
+    document.getElementById('bucket-count').textContent = `${num} generated`;
+  }
+
+  function copyBuckets() {
+    const val = document.getElementById('bucket-output').value;
+    if (!val) return;
+    navigator.clipboard.writeText(val).then(() => {
+      const btn = document.getElementById('bucket-copy-btn');
+      btn.classList.add('copied');
+      btn.innerHTML = COPY_SVG + ' Copied!';
+      setTimeout(() => {
+        btn.classList.remove('copied');
+        btn.innerHTML = COPY_SVG + ' Copy all';
+      }, 1800);
+    });
+  }
+
+  /* ---- IP Joiner ---- */
+  function setSep(val) {
+    document.getElementById('joiner-sep').value = val;
+  }
+
+  function joinIPs() {
+    const ips = parse('joiner-ips');
+    const sep = document.getElementById('joiner-sep').value;
+    const errEl = document.getElementById('joiner-err');
+
+    if (ips.length === 0) {
+      errEl.classList.add('visible');
+      document.getElementById('joiner-result').value = '';
+      document.getElementById('joiner-count').textContent = '0 IPs';
+      return;
+    }
+    errEl.classList.remove('visible');
+    document.getElementById('joiner-result').value = ips.join(sep);
+    document.getElementById('joiner-count').textContent = `${ips.length} IP${ips.length !== 1 ? 's' : ''}`;
+  }
+
+  function copyJoiner() {
+    const val = document.getElementById('joiner-result').value;
+    if (!val) return;
+    navigator.clipboard.writeText(val).then(() => {
+      const btn = document.getElementById('joiner-copy-btn');
+      btn.classList.add('copied');
+      btn.innerHTML = COPY_SVG + ' Copied!';
+      setTimeout(() => {
+        btn.classList.remove('copied');
+        btn.innerHTML = COPY_SVG + ' Copy';
+      }, 1800);
+    });
+  }
+
+  function copyRow(btn) {
+    const csv = btn.closest('.record-row').dataset.csv;
+    navigator.clipboard.writeText(csv).then(() => {
+      btn.style.color = 'var(--teal)';
+      setTimeout(() => btn.style.color = '', 1200);
+    });
+  }
+
+  function copyAll(recordsId, btnId) {
+    const rows = document.querySelectorAll('#' + recordsId + ' .record-row');
+    const text = Array.from(rows).map(r => r.dataset.csv).join('\n');
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.getElementById(btnId);
+      btn.classList.add('copied');
+      btn.innerHTML = COPY_SVG + ' Copied!';
+      setTimeout(() => {
+        btn.classList.remove('copied');
+        btn.innerHTML = COPY_SVG + ' Copy all';
+      }, 1800);
+    });
+  }
+</script>
+</body>
+</html>
