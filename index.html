@@ -27,6 +27,9 @@
   --orange:    #ff9f2e;
   --cyan:      #4dd8f0;
   --dmarc:     #ffcca0;
+  --green:     #5ad98a;
+  --green-dim: #3db86c;
+  --red:       #ff6b6b;
 
   --text:      #dce8f5;
   --text2:     #8ea4bf;
@@ -50,7 +53,6 @@ body {
   overflow-x: hidden;
 }
 
-/* ── Atmospheric BG ── */
 body::before {
   content: '';
   position: fixed; inset: 0; z-index: 0;
@@ -76,7 +78,6 @@ body::after {
   padding: 2.5rem 1.75rem 5rem;
 }
 
-/* ── Header ── */
 header {
   display: flex;
   align-items: center;
@@ -100,80 +101,50 @@ header {
 }
 .logo-icon svg { width: 22px; height: 22px; }
 
-h1 {
-  font-size: 22px;
-  font-weight: 700;
-  letter-spacing: -0.6px;
-  color: var(--text);
-}
+h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.6px; color: var(--text); }
 h1 span { color: var(--teal); }
 
 .tagline {
-  font-size: 11px;
-  color: var(--muted);
+  font-size: 11px; color: var(--muted);
   font-family: 'JetBrains Mono', monospace;
-  letter-spacing: 0.5px;
-  margin-top: 2px;
+  letter-spacing: 0.5px; margin-top: 2px;
 }
 
 .header-badge {
-  display: flex;
-  align-items: center;
-  gap: 6px;
+  display: flex; align-items: center; gap: 6px;
   background: rgba(0,229,200,0.06);
   border: 1px solid rgba(0,229,200,0.15);
-  border-radius: 20px;
-  padding: 6px 14px;
-  font-size: 11px;
-  font-family: 'JetBrains Mono', monospace;
-  color: var(--teal-dim);
-  letter-spacing: 0.3px;
+  border-radius: 20px; padding: 6px 14px;
+  font-size: 11px; font-family: 'JetBrains Mono', monospace;
+  color: var(--teal-dim); letter-spacing: 0.3px;
 }
 .badge-dot {
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: var(--teal);
-  box-shadow: 0 0 6px var(--teal);
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--teal); box-shadow: 0 0 6px var(--teal);
   animation: pulse 2s ease-in-out infinite;
 }
 @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
 
-/* ── Tabs ── */
 .tabs {
-  display: flex;
-  gap: 3px;
-  margin-bottom: 2.25rem;
-  background: var(--surface);
-  border: 1px solid var(--border2);
-  border-radius: 14px;
-  padding: 5px;
-  flex-wrap: wrap;
+  display: flex; gap: 3px; margin-bottom: 2.25rem;
+  background: var(--surface); border: 1px solid var(--border2);
+  border-radius: 14px; padding: 5px; flex-wrap: wrap;
 }
 
 .tab-btn {
-  flex: 1;
-  min-width: 90px;
-  padding: 9px 12px;
-  background: transparent;
-  border: 1px solid transparent;
-  border-radius: 10px;
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--muted);
-  cursor: pointer;
-  transition: all 0.2s;
+  flex: 1; min-width: 80px; padding: 9px 10px;
+  background: transparent; border: 1px solid transparent;
+  border-radius: 10px; font-family: 'Space Grotesk', sans-serif;
+  font-size: 12px; font-weight: 600; color: var(--muted);
+  cursor: pointer; transition: all 0.2s;
   display: flex; align-items: center; justify-content: center;
-  gap: 7px;
-  letter-spacing: 0.2px;
-  white-space: nowrap;
+  gap: 7px; letter-spacing: 0.2px; white-space: nowrap;
 }
 .tab-btn .tab-icon { font-size: 13px; }
 .tab-btn:hover { color: var(--text2); background: var(--surface2); }
 
 .tab-btn.active {
-  background: var(--surface3);
-  border-color: var(--border3);
+  background: var(--surface3); border-color: var(--border3);
   box-shadow: 0 1px 0 rgba(255,255,255,0.04) inset, 0 2px 8px rgba(0,0,0,0.2);
 }
 .tab-btn.active.t-spf    { color: var(--teal);   border-color: rgba(0,229,200,0.25); }
@@ -182,24 +153,15 @@ h1 span { color: var(--teal); }
 .tab-btn.active.t-dmarc  { color: var(--dmarc);  border-color: rgba(255,204,160,0.25); }
 .tab-btn.active.t-bucket { color: var(--orange); border-color: rgba(255,159,46,0.25); }
 .tab-btn.active.t-joiner { color: var(--cyan);   border-color: rgba(77,216,240,0.25); }
+.tab-btn.active.t-detect { color: var(--green);  border-color: rgba(90,217,138,0.25); }
 
-/* ── Panels ── */
 .panel { display: none; }
-.panel.active {
-  display: block;
-  animation: fadeSlide 0.22s ease;
-}
-@keyframes fadeSlide {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
+.panel.active { display: block; animation: fadeSlide 0.22s ease; }
+@keyframes fadeSlide { from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);} }
 
-/* ── Form ── */
 .form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.1rem;
-  margin-bottom: 1.1rem;
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 1.1rem; margin-bottom: 1.1rem;
 }
 @media (max-width: 640px) { .form-grid { grid-template-columns: 1fr; } }
 
@@ -207,46 +169,28 @@ h1 span { color: var(--teal); }
 .field.full { grid-column: 1 / -1; }
 
 label {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 1.6px;
-  text-transform: uppercase;
-  color: var(--text2);
-  display: flex;
-  align-items: center;
-  gap: 6px;
+  font-size: 10px; font-weight: 700; letter-spacing: 1.6px;
+  text-transform: uppercase; color: var(--text2);
+  display: flex; align-items: center; gap: 6px;
 }
 label .hint {
-  font-weight: 400;
-  text-transform: none;
-  letter-spacing: 0;
-  font-family: 'JetBrains Mono', monospace;
-  color: var(--muted);
-  font-size: 10px;
+  font-weight: 400; text-transform: none; letter-spacing: 0;
+  font-family: 'JetBrains Mono', monospace; color: var(--muted); font-size: 10px;
 }
 
 textarea, input[type="text"], input[type="number"], select {
-  background: var(--surface2);
-  color: var(--text);
-  border: 1px solid var(--border2);
-  border-radius: 10px;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 12.5px;
-  line-height: 1.65;
-  padding: 11px 13px;
+  background: var(--surface2); color: var(--text);
+  border: 1px solid var(--border2); border-radius: 10px;
+  font-family: 'JetBrains Mono', monospace; font-size: 12.5px;
+  line-height: 1.65; padding: 11px 13px;
   transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
-  width: 100%;
-  box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+  width: 100%; box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
 }
-textarea::placeholder, input::placeholder {
-  color: var(--muted);
-}
+textarea::placeholder, input::placeholder { color: var(--muted); }
 select {
-  cursor: pointer;
-  appearance: none;
+  cursor: pointer; appearance: none;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23445570' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
-  background-repeat: no-repeat;
-  background-position: right 13px center;
+  background-repeat: no-repeat; background-position: right 13px center;
 }
 
 textarea:focus, input:focus, select:focus { outline: none; background: var(--surface3); }
@@ -256,45 +200,28 @@ textarea:focus, input:focus, select:focus { outline: none; background: var(--sur
 .f-orange:focus { border-color: rgba(255,159,46,0.5);   box-shadow: 0 0 0 3px rgba(255,159,46,0.07),   inset 0 1px 3px rgba(0,0,0,0.2); }
 .f-joiner:focus { border-color: rgba(77,216,240,0.5);   box-shadow: 0 0 0 3px rgba(77,216,240,0.07),   inset 0 1px 3px rgba(0,0,0,0.2); }
 .f-dmarc:focus  { border-color: rgba(255,204,160,0.5);  box-shadow: 0 0 0 3px rgba(255,204,160,0.07),  inset 0 1px 3px rgba(0,0,0,0.2); }
+.f-green:focus  { border-color: rgba(90,217,138,0.5);   box-shadow: 0 0 0 3px rgba(90,217,138,0.07),   inset 0 1px 3px rgba(0,0,0,0.2); }
 
-/* ── Info note ── */
 .info-note {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: rgba(0,229,200,0.04);
-  border: 1px solid rgba(0,229,200,0.14);
-  border-radius: 9px;
-  padding: 10px 14px;
-  font-size: 11.5px;
-  color: var(--text2);
-  font-family: 'JetBrains Mono', monospace;
+  display: flex; align-items: center; gap: 10px;
+  background: rgba(0,229,200,0.04); border: 1px solid rgba(0,229,200,0.14);
+  border-radius: 9px; padding: 10px 14px; font-size: 11.5px;
+  color: var(--text2); font-family: 'JetBrains Mono', monospace;
   margin-bottom: 1rem;
 }
 .info-note strong { color: var(--teal); font-weight: 600; }
 .info-note::before { content: '⚡'; font-size: 13px; flex-shrink: 0; }
 
-/* ── Generate buttons ── */
 .btn-generate {
-  width: 100%;
-  padding: 14px 20px;
-  border: none;
-  border-radius: 10px;
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 13.5px;
-  font-weight: 700;
-  letter-spacing: 0.2px;
-  cursor: pointer;
+  width: 100%; padding: 14px 20px; border: none; border-radius: 10px;
+  font-family: 'Space Grotesk', sans-serif; font-size: 13.5px; font-weight: 700;
+  letter-spacing: 0.2px; cursor: pointer;
   transition: filter 0.2s, transform 0.1s, box-shadow 0.2s;
-  margin-top: 0.25rem;
-  display: flex; align-items: center; justify-content: center;
-  gap: 9px;
-  position: relative;
-  overflow: hidden;
+  margin-top: 0.25rem; display: flex; align-items: center; justify-content: center;
+  gap: 9px; position: relative; overflow: hidden;
 }
 .btn-generate::after {
-  content: '';
-  position: absolute; inset: 0;
+  content: ''; position: absolute; inset: 0;
   background: linear-gradient(to bottom, rgba(255,255,255,0.08) 0%, transparent 60%);
   pointer-events: none;
 }
@@ -307,53 +234,33 @@ textarea:focus, input:focus, select:focus { outline: none; background: var(--sur
 .btn-dmarc  { background: linear-gradient(135deg, #d09060, #ffcca0); color: #1e130a; box-shadow: 0 2px 12px rgba(255,204,160,0.2); }
 .btn-bucket { background: linear-gradient(135deg, #e07800, #ff9f2e); color: #1a0d00; box-shadow: 0 2px 12px rgba(255,159,46,0.2); }
 .btn-joiner { background: linear-gradient(135deg, #20a0c0, #4dd8f0); color: #041014; box-shadow: 0 2px 12px rgba(77,216,240,0.2); }
+.btn-detect { background: linear-gradient(135deg, #28a85a, #5ad98a); color: #041208; box-shadow: 0 2px 12px rgba(90,217,138,0.2); }
 
-/* ── Error ── */
 .error-msg {
-  display: none;
-  background: rgba(255,107,107,0.07);
-  border: 1px solid rgba(255,107,107,0.22);
-  border-radius: 9px;
-  padding: 10px 14px;
-  font-size: 12px;
-  color: var(--error);
-  font-family: 'JetBrains Mono', monospace;
-  margin-top: 0.65rem;
+  display: none; background: rgba(255,107,107,0.07);
+  border: 1px solid rgba(255,107,107,0.22); border-radius: 9px;
+  padding: 10px 14px; font-size: 12px; color: var(--error);
+  font-family: 'JetBrains Mono', monospace; margin-top: 0.65rem;
 }
 .error-msg.visible { display: flex; align-items: center; gap: 8px; }
 .error-msg.visible::before { content: '✕'; font-weight: 700; flex-shrink: 0; }
 
-/* ── Output section ── */
-.output-section {
-  margin-top: 1.75rem;
-  display: none;
-  animation: fadeSlide 0.22s ease;
-}
+.output-section { margin-top: 1.75rem; display: none; animation: fadeSlide 0.22s ease; }
 .output-section.visible { display: block; }
 
 .output-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 10px;
-  flex-wrap: wrap;
-  gap: 8px;
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 10px; flex-wrap: wrap; gap: 8px;
 }
 .output-title {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 1.6px;
-  text-transform: uppercase;
-  color: var(--text2);
+  font-size: 10px; font-weight: 700; letter-spacing: 1.6px;
+  text-transform: uppercase; color: var(--text2);
   display: flex; align-items: center; gap: 9px;
 }
 
 .rc-pill {
-  font-size: 10.5px;
-  font-family: 'JetBrains Mono', monospace;
-  padding: 2px 9px;
-  border-radius: 20px;
-  font-weight: 500;
+  font-size: 10.5px; font-family: 'JetBrains Mono', monospace;
+  padding: 2px 9px; border-radius: 20px; font-weight: 500;
 }
 .rc-spf    { background: rgba(0,229,200,0.08);   border: 1px solid rgba(0,229,200,0.18);   color: var(--teal); }
 .rc-a      { background: rgba(255,179,102,0.08); border: 1px solid rgba(255,179,102,0.18); color: var(--amber); }
@@ -361,71 +268,48 @@ textarea:focus, input:focus, select:focus { outline: none; background: var(--sur
 .rc-dmarc  { background: rgba(255,204,160,0.08); border: 1px solid rgba(255,204,160,0.18); color: var(--dmarc); }
 .rc-bucket { background: rgba(255,159,46,0.08);  border: 1px solid rgba(255,159,46,0.18);  color: var(--orange); }
 .rc-joiner { background: rgba(77,216,240,0.08);  border: 1px solid rgba(77,216,240,0.18);  color: var(--cyan); }
+.rc-detect { background: rgba(90,217,138,0.08);  border: 1px solid rgba(90,217,138,0.18);  color: var(--green); }
+.rc-found  { background: rgba(90,217,138,0.10);  border: 1px solid rgba(90,217,138,0.22);  color: var(--green); }
+.rc-nf     { background: rgba(255,107,107,0.10); border: 1px solid rgba(255,107,107,0.22); color: var(--red); }
 
 .btn-copy {
-  background: transparent;
-  border: 1px solid var(--border2);
-  color: var(--text2);
-  border-radius: 7px;
-  padding: 5px 13px;
-  font-size: 11px;
-  font-family: 'JetBrains Mono', monospace;
-  cursor: pointer;
-  transition: all 0.2s;
+  background: transparent; border: 1px solid var(--border2);
+  color: var(--text2); border-radius: 7px; padding: 5px 13px;
+  font-size: 11px; font-family: 'JetBrains Mono', monospace;
+  cursor: pointer; transition: all 0.2s;
   display: flex; align-items: center; gap: 6px;
 }
 .btn-copy:hover { border-color: rgba(0,229,200,0.35); color: var(--teal); background: var(--teal-glow); }
 .btn-copy.copied { border-color: var(--teal); color: var(--teal); background: var(--teal-glow); }
 
-/* ── Records box ── */
 .records-box {
-  background: var(--surface);
-  border: 1px solid var(--border2);
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  background: var(--surface); border: 1px solid var(--border2);
+  border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.15);
 }
 
 .record-row {
   display: flex; align-items: flex-start;
-  border-bottom: 1px solid var(--border);
-  transition: background 0.15s;
+  border-bottom: 1px solid var(--border); transition: background 0.15s;
 }
 .record-row:last-child { border-bottom: none; }
 .record-row:hover { background: var(--surface2); }
 
 .record-index {
-  min-width: 38px;
-  padding: 13px 0 13px 14px;
-  font-size: 10px;
-  font-family: 'JetBrains Mono', monospace;
-  color: var(--muted);
-  user-select: none;
-  flex-shrink: 0;
-  letter-spacing: 0.5px;
+  min-width: 38px; padding: 13px 0 13px 14px;
+  font-size: 10px; font-family: 'JetBrains Mono', monospace;
+  color: var(--muted); user-select: none; flex-shrink: 0; letter-spacing: 0.5px;
 }
 .record-text {
-  padding: 12px 12px 12px 8px;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11.5px;
-  line-height: 1.75;
-  word-break: break-all;
-  flex: 1;
-  color: #b0c8e4;
+  padding: 12px 12px 12px 8px; font-family: 'JetBrains Mono', monospace;
+  font-size: 11.5px; line-height: 1.75; word-break: break-all; flex: 1; color: #b0c8e4;
 }
 .copy-row-btn {
-  flex-shrink: 0; width: 36px;
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer;
-  color: var(--muted);
-  background: transparent; border: none;
-  transition: color 0.15s;
-  padding: 12px 10px;
-  align-self: stretch;
+  flex-shrink: 0; width: 36px; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: var(--muted); background: transparent; border: none;
+  transition: color 0.15s; padding: 12px 10px; align-self: stretch;
 }
 .copy-row-btn:hover { color: var(--teal); }
 
-/* ── Syntax colors ── */
 .p-domain { color: var(--p-domain); }
 .p-sub    { color: var(--p-sub); }
 .p-type   { color: var(--p-type); }
@@ -437,50 +321,73 @@ textarea:focus, input:focus, select:focus { outline: none; background: var(--sur
 .p-value  { color: var(--p-value); }
 .p-dns    { color: var(--p-dns); }
 
-/* ── Checkbox group ── */
-.checkbox-group {
-  display: flex; gap: 10px; flex-wrap: wrap;
-  margin: 14px 0;
-}
+.checkbox-group { display: flex; gap: 10px; flex-wrap: wrap; margin: 14px 0; }
 .checkbox-item {
   display: flex; align-items: center; gap: 8px;
-  background: var(--surface2);
-  border: 1px solid var(--border2);
-  border-radius: 8px;
-  padding: 7px 13px;
-  cursor: pointer;
-  font-size: 12.5px;
-  font-family: 'JetBrains Mono', monospace;
-  color: var(--text2);
-  transition: all 0.15s;
-  user-select: none;
+  background: var(--surface2); border: 1px solid var(--border2);
+  border-radius: 8px; padding: 7px 13px; cursor: pointer;
+  font-size: 12.5px; font-family: 'JetBrains Mono', monospace;
+  color: var(--text2); transition: all 0.15s; user-select: none;
 }
 .checkbox-item:hover { border-color: var(--border3); color: var(--text); }
 .checkbox-item input { accent-color: var(--orange); width: 14px; height: 14px; cursor: pointer; }
 
-/* ── Preset buttons ── */
 .preset-group { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
-
 .preset-btn {
-  background: var(--surface2);
-  border: 1px solid var(--border2);
-  color: var(--text2);
-  border-radius: 7px;
-  padding: 5px 14px;
-  font-size: 12px;
-  font-family: 'JetBrains Mono', monospace;
-  cursor: pointer;
-  transition: all 0.15s;
+  background: var(--surface2); border: 1px solid var(--border2); color: var(--text2);
+  border-radius: 7px; padding: 5px 14px; font-size: 12px;
+  font-family: 'JetBrains Mono', monospace; cursor: pointer; transition: all 0.15s;
 }
 .preset-btn:hover { border-color: rgba(77,216,240,0.35); color: var(--cyan); background: rgba(77,216,240,0.06); }
 
-/* ── Textarea readonly output ── */
-textarea[readonly] {
-  resize: vertical;
-  color: var(--text2);
-}
+textarea[readonly] { resize: vertical; color: var(--text2); }
 
-/* ── Divider ── */
+/* ── Domain Detector Specific ── */
+.detect-stats {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+  margin-bottom: 1.25rem;
+}
+@media (max-width: 560px) { .detect-stats { grid-template-columns: 1fr 1fr; } }
+
+.stat-card {
+  background: var(--surface); border: 1px solid var(--border2);
+  border-radius: 10px; padding: 12px 14px;
+}
+.stat-n { font-size: 24px; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+.stat-l { font-size: 10px; color: var(--text2); margin-top: 3px; letter-spacing: 0.5px; text-transform: uppercase; }
+.stat-n.c-green { color: var(--green); }
+.stat-n.c-red   { color: var(--red); }
+.stat-n.c-teal  { color: var(--teal); }
+.stat-n.c-text  { color: var(--text); }
+
+.filter-row { display: flex; gap: 6px; margin-bottom: 1rem; flex-wrap: wrap; }
+.filter-btn {
+  padding: 5px 14px; font-size: 11px; border-radius: 99px;
+  border: 1px solid var(--border2); cursor: pointer;
+  background: var(--surface2); color: var(--text2);
+  font-family: 'JetBrains Mono', monospace; transition: all 0.15s;
+}
+.filter-btn:hover { border-color: var(--border3); color: var(--text); }
+.filter-btn.active { background: var(--surface3); border-color: rgba(90,217,138,0.35); color: var(--green); }
+
+.detect-row {
+  display: flex; align-items: center;
+  border-bottom: 1px solid var(--border); transition: background 0.15s;
+}
+.detect-row:last-child { border-bottom: none; }
+.detect-row:hover { background: var(--surface2); }
+.det-num { min-width: 38px; padding: 11px 0 11px 14px; font-size: 10px; font-family: 'JetBrains Mono', monospace; color: var(--muted); flex-shrink: 0; }
+.det-domain { padding: 11px 10px; font-family: 'JetBrains Mono', monospace; font-size: 12px; flex: 1; color: var(--text); word-break: break-all; }
+.det-badge {
+  flex-shrink: 0; margin: 8px 12px 8px 0;
+  font-size: 10px; font-family: 'JetBrains Mono', monospace;
+  padding: 3px 10px; border-radius: 99px; font-weight: 600;
+}
+.det-badge.found    { background: rgba(90,217,138,0.12); border: 1px solid rgba(90,217,138,0.25); color: var(--green); }
+.det-badge.notfound { background: rgba(255,107,107,0.10); border: 1px solid rgba(255,107,107,0.22); color: var(--red); }
+
+.copy-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
 .section-divider {
   height: 1px;
   background: linear-gradient(to right, transparent, var(--border2), transparent);
@@ -502,7 +409,7 @@ textarea[readonly] {
       </div>
       <div>
         <h1>Requests <span>Tools</span></h1>
-        <div class="tagline">SPF · A · MX · DMARC · Buckets · IP Joiner</div>
+        <div class="tagline">SPF · A · MX · DMARC · Buckets · IP Joiner · Detector</div>
       </div>
     </div>
     <div class="header-badge"><span class="badge-dot"></span>DNS Toolkit</div>
@@ -515,6 +422,7 @@ textarea[readonly] {
     <button class="tab-btn t-dmarc"         id="tab-dmarc"  onclick="switchTab('dmarc')">  <span class="tab-icon">🛡️</span> DMARC</button>
     <button class="tab-btn t-bucket"        id="tab-bucket" onclick="switchTab('bucket')"> <span class="tab-icon">📦</span> Buckets</button>
     <button class="tab-btn t-joiner"        id="tab-joiner" onclick="switchTab('joiner')"> <span class="tab-icon">🔗</span> IP Joiner</button>
+    <button class="tab-btn t-detect"        id="tab-detect" onclick="switchTab('detect')"> <span class="tab-icon">🔍</span> Detector</button>
   </div>
 
   <!-- SPF -->
@@ -665,10 +573,62 @@ textarea[readonly] {
     </div>
   </div>
 
+  <!-- Domain Detector -->
+  <div class="panel" id="panel-detect">
+    <div class="form-grid">
+      <div class="field">
+        <label>Source list <span class="hint">reference domains</span></label>
+        <textarea id="det-source" class="f-green" rows="8" placeholder="google.com&#10;facebook.com&#10;github.com&#10;example.org&#10;..."></textarea>
+      </div>
+      <div class="field">
+        <label>Check list <span class="hint">domains to look up</span></label>
+        <textarea id="det-check" class="f-green" rows="8" placeholder="github.com&#10;twitter.com&#10;example.org&#10;..."></textarea>
+      </div>
+    </div>
+    <button class="btn-generate btn-detect" onclick="detectDomains()">🔍 Detect Matches</button>
+    <div class="error-msg" id="detect-err">Enter domains in both fields (one per line).</div>
+
+    <div class="output-section" id="detect-output">
+      <div class="detect-stats">
+        <div class="stat-card">
+          <div class="stat-n c-teal" id="ds-source">0</div>
+          <div class="stat-l">Source domains</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-n c-text" id="ds-check">0</div>
+          <div class="stat-l">Checked</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-n c-green" id="ds-found">0</div>
+          <div class="stat-l">Found</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-n c-red" id="ds-nf">0</div>
+          <div class="stat-l">Not found</div>
+        </div>
+      </div>
+
+      <div class="filter-row">
+        <button class="filter-btn active" onclick="detFilter('all',this)">All</button>
+        <button class="filter-btn" onclick="detFilter('found',this)">Found only</button>
+        <button class="filter-btn" onclick="detFilter('notfound',this)">Not found only</button>
+      </div>
+
+      <div class="output-header">
+        <div class="output-title">Results <span class="rc-pill rc-detect" id="det-count">0 results</span></div>
+        <div class="copy-actions">
+          <button class="btn-copy" id="det-copy-found" onclick="detCopy('found','det-copy-found')">Copy found</button>
+          <button class="btn-copy" id="det-copy-nf" onclick="detCopy('notfound','det-copy-nf')">Copy not found</button>
+        </div>
+      </div>
+      <div class="records-box" id="detect-records"></div>
+    </div>
+  </div>
+
 </div>
 
 <script>
-  const TABS = ['spf','a','mx','dmarc','bucket','joiner'];
+  const TABS = ['spf','a','mx','dmarc','bucket','joiner','detect'];
 
   function switchTab(name) {
     TABS.forEach(t => {
@@ -861,6 +821,89 @@ textarea[readonly] {
       const btn = document.getElementById(btnId);
       btn.classList.add('copied'); btn.innerText = 'Copied!';
       setTimeout(() => { btn.classList.remove('copied'); btn.innerText = 'Copy all'; }, 1500);
+    });
+  }
+
+  /* ── Domain Detector ── */
+  let detRows = [];
+  let detCurrentFilter = 'all';
+
+  function normalizeDomain(d) {
+    return d.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, '').replace(/\s/g,'');
+  }
+
+  function detectDomains() {
+    const srcRaw = parse('det-source').map(normalizeDomain).filter(Boolean);
+    const chkRaw = parse('det-check').map(normalizeDomain).filter(Boolean);
+
+    if (!srcRaw.length || !chkRaw.length) {
+      document.getElementById('detect-err').classList.add('visible');
+      document.getElementById('detect-output').classList.remove('visible');
+      return;
+    }
+    document.getElementById('detect-err').classList.remove('visible');
+
+    const srcSet = new Set(srcRaw);
+    detRows = chkRaw.map(d => ({ domain: d, found: srcSet.has(d) }));
+
+    const found = detRows.filter(r => r.found).length;
+    document.getElementById('ds-source').textContent = srcRaw.length;
+    document.getElementById('ds-check').textContent = chkRaw.length;
+    document.getElementById('ds-found').textContent = found;
+    document.getElementById('ds-nf').textContent = chkRaw.length - found;
+
+    detCurrentFilter = 'all';
+    document.querySelectorAll('.filter-btn').forEach((b,i) => b.classList.toggle('active', i === 0));
+
+    document.getElementById('detect-output').classList.add('visible');
+    renderDetect();
+  }
+
+  function detFilter(f, el) {
+    detCurrentFilter = f;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+    renderDetect();
+  }
+
+  function renderDetect() {
+    let rows = detRows;
+    if (detCurrentFilter === 'found')    rows = detRows.filter(r => r.found);
+    if (detCurrentFilter === 'notfound') rows = detRows.filter(r => !r.found);
+
+    const box = document.getElementById('detect-records');
+    box.innerHTML = '';
+
+    if (!rows.length) {
+      box.innerHTML = '<div style="padding:1.5rem;text-align:center;font-size:12px;color:var(--muted);font-family:\'JetBrains Mono\',monospace;">No results for this filter.</div>';
+      document.getElementById('det-count').textContent = '0 results';
+      return;
+    }
+
+    rows.forEach((r, i) => {
+      const div = document.createElement('div');
+      div.className = 'detect-row';
+      div.dataset.domain = r.domain;
+      div.dataset.status = r.found ? 'found' : 'notfound';
+      div.innerHTML =
+        `<span class="det-num">${String(i+1).padStart(2,'0')}</span>` +
+        `<span class="det-domain">${esc(r.domain)}</span>` +
+        `<span class="det-badge ${r.found ? 'found' : 'notfound'}">${r.found ? 'found' : 'not found'}</span>`;
+      box.appendChild(div);
+    });
+
+    document.getElementById('det-count').textContent = `${rows.length} result${rows.length !== 1 ? 's' : ''}`;
+  }
+
+  function detCopy(type, btnId) {
+    const filtered = detRows.filter(r => type === 'found' ? r.found : !r.found);
+    if (!filtered.length) return;
+    navigator.clipboard.writeText(filtered.map(r => r.domain).join('\n')).then(() => {
+      const btn = document.getElementById(btnId);
+      const orig = btn.innerText;
+      btn.classList.add('copied');
+      btn.innerText = 'Copied!';
+      setTimeout(() => { btn.classList.remove('copied'); btn.innerText = orig; }, 1500);
     });
   }
 </script>
