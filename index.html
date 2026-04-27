@@ -30,6 +30,8 @@
   --green:     #5ad98a;
   --green-dim: #3db86c;
   --red:       #ff6b6b;
+  --lime:      #a8ff6b;
+  --lime-dim:  #7ed43f;
 
   --text:      #dce8f5;
   --text2:     #8ea4bf;
@@ -154,6 +156,7 @@ h1 span { color: var(--teal); }
 .tab-btn.active.t-bucket { color: var(--orange); border-color: rgba(255,159,46,0.25); }
 .tab-btn.active.t-joiner { color: var(--cyan);   border-color: rgba(77,216,240,0.25); }
 .tab-btn.active.t-detect { color: var(--green);  border-color: rgba(90,217,138,0.25); }
+.tab-btn.active.t-dnsa   { color: var(--lime);   border-color: rgba(168,255,107,0.25); }
 
 .panel { display: none; }
 .panel.active { display: block; animation: fadeSlide 0.22s ease; }
@@ -201,6 +204,7 @@ textarea:focus, input:focus, select:focus { outline: none; background: var(--sur
 .f-joiner:focus { border-color: rgba(77,216,240,0.5);   box-shadow: 0 0 0 3px rgba(77,216,240,0.07),   inset 0 1px 3px rgba(0,0,0,0.2); }
 .f-dmarc:focus  { border-color: rgba(255,204,160,0.5);  box-shadow: 0 0 0 3px rgba(255,204,160,0.07),  inset 0 1px 3px rgba(0,0,0,0.2); }
 .f-green:focus  { border-color: rgba(90,217,138,0.5);   box-shadow: 0 0 0 3px rgba(90,217,138,0.07),   inset 0 1px 3px rgba(0,0,0,0.2); }
+.f-lime:focus   { border-color: rgba(168,255,107,0.5);  box-shadow: 0 0 0 3px rgba(168,255,107,0.07),  inset 0 1px 3px rgba(0,0,0,0.2); }
 
 .info-note {
   display: flex; align-items: center; gap: 10px;
@@ -211,6 +215,12 @@ textarea:focus, input:focus, select:focus { outline: none; background: var(--sur
 }
 .info-note strong { color: var(--teal); font-weight: 600; }
 .info-note::before { content: '⚡'; font-size: 13px; flex-shrink: 0; }
+
+.info-note.lime {
+  background: rgba(168,255,107,0.04); border-color: rgba(168,255,107,0.14);
+}
+.info-note.lime strong { color: var(--lime); }
+.info-note.lime::before { content: '🌐'; }
 
 .btn-generate {
   width: 100%; padding: 14px 20px; border: none; border-radius: 10px;
@@ -235,6 +245,7 @@ textarea:focus, input:focus, select:focus { outline: none; background: var(--sur
 .btn-bucket { background: linear-gradient(135deg, #e07800, #ff9f2e); color: #1a0d00; box-shadow: 0 2px 12px rgba(255,159,46,0.2); }
 .btn-joiner { background: linear-gradient(135deg, #20a0c0, #4dd8f0); color: #041014; box-shadow: 0 2px 12px rgba(77,216,240,0.2); }
 .btn-detect { background: linear-gradient(135deg, #28a85a, #5ad98a); color: #041208; box-shadow: 0 2px 12px rgba(90,217,138,0.2); }
+.btn-dnsa   { background: linear-gradient(135deg, #5a9e20, #a8ff6b); color: #0a1404; box-shadow: 0 2px 12px rgba(168,255,107,0.2); }
 
 .error-msg {
   display: none; background: rgba(255,107,107,0.07);
@@ -271,6 +282,7 @@ textarea:focus, input:focus, select:focus { outline: none; background: var(--sur
 .rc-detect { background: rgba(90,217,138,0.08);  border: 1px solid rgba(90,217,138,0.18);  color: var(--green); }
 .rc-found  { background: rgba(90,217,138,0.10);  border: 1px solid rgba(90,217,138,0.22);  color: var(--green); }
 .rc-nf     { background: rgba(255,107,107,0.10); border: 1px solid rgba(255,107,107,0.22); color: var(--red); }
+.rc-dnsa   { background: rgba(168,255,107,0.08); border: 1px solid rgba(168,255,107,0.18); color: var(--lime); }
 
 .btn-copy {
   background: transparent; border: 1px solid var(--border2);
@@ -320,6 +332,7 @@ textarea:focus, input:focus, select:focus { outline: none; background: var(--sur
 .p-key    { color: var(--p-key); }
 .p-value  { color: var(--p-value); }
 .p-dns    { color: var(--p-dns); }
+.p-lime   { color: var(--lime); }
 
 .checkbox-group { display: flex; gap: 10px; flex-wrap: wrap; margin: 14px 0; }
 .checkbox-item {
@@ -336,7 +349,7 @@ textarea:focus, input:focus, select:focus { outline: none; background: var(--sur
 .preset-btn {
   background: var(--surface2); border: 1px solid var(--border2); color: var(--text2);
   border-radius: 7px; padding: 5px 14px; font-size: 12px;
-  font-family: 'JetBrains Mono', monospace; cursor: pointer; transition: all 0.15s;
+  font-family: 'JetBrains Mono', monospace; cursor: pointer; transition: all 0.15px;
 }
 .preset-btn:hover { border-color: rgba(77,216,240,0.35); color: var(--cyan); background: rgba(77,216,240,0.06); }
 
@@ -393,6 +406,18 @@ textarea[readonly] { resize: vertical; color: var(--text2); }
   background: linear-gradient(to right, transparent, var(--border2), transparent);
   margin: 1.5rem 0;
 }
+
+/* DNS A Tool highlight */
+.dnsa-preview {
+  background: var(--surface); border: 1px solid rgba(168,255,107,0.12);
+  border-radius: 10px; padding: 13px 16px; margin-bottom: 1rem;
+  font-family: 'JetBrains Mono', monospace; font-size: 11px; line-height: 1.8;
+  color: var(--text2);
+}
+.dnsa-preview .pl { color: var(--p-domain); }
+.dnsa-preview .pk { color: var(--lime); }
+.dnsa-preview .pv { color: var(--p-ip); }
+.dnsa-preview .pm { color: var(--muted); }
 </style>
 </head>
 <body>
@@ -409,7 +434,7 @@ textarea[readonly] { resize: vertical; color: var(--text2); }
       </div>
       <div>
         <h1>Requests <span>Tools</span></h1>
-        <div class="tagline">SPF · A · MX · DMARC · Buckets · IP Joiner · Detector</div>
+        <div class="tagline">SPF · A · MX · DMARC · Buckets · IP Joiner · Detector · DNS A</div>
       </div>
     </div>
     <div class="header-badge"><span class="badge-dot"></span>DNS Toolkit</div>
@@ -423,6 +448,7 @@ textarea[readonly] { resize: vertical; color: var(--text2); }
     <button class="tab-btn t-bucket"        id="tab-bucket" onclick="switchTab('bucket')"> <span class="tab-icon">📦</span> Buckets</button>
     <button class="tab-btn t-joiner"        id="tab-joiner" onclick="switchTab('joiner')"> <span class="tab-icon">🔗</span> IP Joiner</button>
     <button class="tab-btn t-detect"        id="tab-detect" onclick="switchTab('detect')"> <span class="tab-icon">🔍</span> Detector</button>
+    <button class="tab-btn t-dnsa"          id="tab-dnsa"   onclick="switchTab('dnsa')">   <span class="tab-icon">🌐</span> DNS A</button>
   </div>
 
   <!-- SPF -->
@@ -625,10 +651,52 @@ textarea[readonly] { resize: vertical; color: var(--text2); }
     </div>
   </div>
 
+  <!-- ══════════════════════════════════════════════
+       DNS A — new tool
+       Output: [dom],dns.[dom],TXT,Arecords:IP1;IP2;...
+       ══════════════════════════════════════════════ -->
+  <div class="panel" id="panel-dnsa">
+
+    <div class="info-note lime">
+      Output format: <strong>[domain],dns.[domain],TXT,Arecords:IP1;IP2;...</strong> — same IPs applied to every domain
+    </div>
+
+    <!-- live format preview -->
+    <div class="dnsa-preview" id="dnsa-preview">
+      <span class="pm">// preview will appear here after you type</span>
+    </div>
+
+    <div class="form-grid">
+      <div class="field">
+        <label>Domains <span class="hint">one per line</span></label>
+        <textarea id="dnsa-domains" class="f-lime" rows="8"
+          placeholder="calmwoodland.com&#10;example.org&#10;mysite.net"
+          oninput="dnsaPreview()"></textarea>
+      </div>
+      <div class="field">
+        <label>IPs <span class="hint">one per line — applied to all domains</span></label>
+        <textarea id="dnsa-ips" class="f-lime" rows="8"
+          placeholder="67.222.128.54&#10;67.222.128.55&#10;67.222.128.56"
+          oninput="dnsaPreview()"></textarea>
+      </div>
+    </div>
+
+    <button class="btn-generate btn-dnsa" onclick="generateDNSA()">🌐 Generate DNS A Records</button>
+    <div class="error-msg" id="dnsa-err">Enter at least one domain and one IP.</div>
+
+    <div class="output-section" id="dnsa-output">
+      <div class="output-header">
+        <div class="output-title">CSV Output <span class="rc-pill rc-dnsa" id="dnsa-count">0 records</span></div>
+        <button class="btn-copy" id="dnsa-copy-btn" onclick="copyAll('dnsa-records','dnsa-copy-btn')">Copy all</button>
+      </div>
+      <div class="records-box" id="dnsa-records"></div>
+    </div>
+  </div>
+
 </div>
 
 <script>
-  const TABS = ['spf','a','mx','dmarc','bucket','joiner','detect'];
+  const TABS = ['spf','a','mx','dmarc','bucket','joiner','detect','dnsa'];
 
   function switchTab(name) {
     TABS.forEach(t => {
@@ -661,6 +729,7 @@ textarea[readonly] { resize: vertical; color: var(--text2); }
     container.appendChild(row);
   }
 
+  /* ── SPF ── */
   function generateSPF() {
     let domains = parse('spf-domains'), subsRaw = parse('spf-subs');
     if (subsRaw.length === 0 && domains.length > 0) subsRaw = [...domains];
@@ -682,6 +751,7 @@ textarea[readonly] { resize: vertical; color: var(--text2); }
     document.getElementById('spf-output').classList.add('visible');
   }
 
+  /* ── A Records ── */
   function generateA() {
     const domains = parse('a-domains'), subs = parse('a-subs'), ips = parse('a-ips');
     if (domains.length !== subs.length) {
@@ -700,6 +770,7 @@ textarea[readonly] { resize: vertical; color: var(--text2); }
     document.getElementById('a-output').classList.add('visible');
   }
 
+  /* ── MX Records ── */
   function generateMX() {
     const domains = parse('mx-domains'), subs = parse('mx-subs'), ips = parse('mx-ips');
     if (domains.length !== subs.length) {
@@ -718,6 +789,7 @@ textarea[readonly] { resize: vertical; color: var(--text2); }
     document.getElementById('mx-output').classList.add('visible');
   }
 
+  /* ── DMARC ── */
   function generateDMARC() {
     let rawDomains = parse('dmarc-domains');
     if (rawDomains.length === 0) {
@@ -747,6 +819,7 @@ textarea[readonly] { resize: vertical; color: var(--text2); }
     document.getElementById('dmarc-output').classList.add('visible');
   }
 
+  /* ── Buckets ── */
   function generateBuckets() {
     const len  = Math.max(1, parseInt(document.getElementById('bucket-len').value) || 20);
     const num  = Math.max(1, parseInt(document.getElementById('bucket-num').value) || 5);
@@ -779,6 +852,7 @@ textarea[readonly] { resize: vertical; color: var(--text2); }
     });
   }
 
+  /* ── IP Joiner ── */
   function setSep(v) { document.getElementById('joiner-sep').value = v; }
 
   function joinIPs() {
@@ -805,6 +879,7 @@ textarea[readonly] { resize: vertical; color: var(--text2); }
     });
   }
 
+  /* ── Shared copy helpers ── */
   function copyRow(btn) {
     const csv = btn.closest('.record-row').dataset.csv;
     navigator.clipboard.writeText(csv).then(() => {
@@ -835,26 +910,21 @@ textarea[readonly] { resize: vertical; color: var(--text2); }
   function detectDomains() {
     const srcRaw = parse('det-source').map(normalizeDomain).filter(Boolean);
     const chkRaw = parse('det-check').map(normalizeDomain).filter(Boolean);
-
     if (!srcRaw.length || !chkRaw.length) {
       document.getElementById('detect-err').classList.add('visible');
       document.getElementById('detect-output').classList.remove('visible');
       return;
     }
     document.getElementById('detect-err').classList.remove('visible');
-
     const srcSet = new Set(srcRaw);
     detRows = chkRaw.map(d => ({ domain: d, found: srcSet.has(d) }));
-
     const found = detRows.filter(r => r.found).length;
     document.getElementById('ds-source').textContent = srcRaw.length;
     document.getElementById('ds-check').textContent = chkRaw.length;
     document.getElementById('ds-found').textContent = found;
     document.getElementById('ds-nf').textContent = chkRaw.length - found;
-
     detCurrentFilter = 'all';
     document.querySelectorAll('.filter-btn').forEach((b,i) => b.classList.toggle('active', i === 0));
-
     document.getElementById('detect-output').classList.add('visible');
     renderDetect();
   }
@@ -870,16 +940,13 @@ textarea[readonly] { resize: vertical; color: var(--text2); }
     let rows = detRows;
     if (detCurrentFilter === 'found')    rows = detRows.filter(r => r.found);
     if (detCurrentFilter === 'notfound') rows = detRows.filter(r => !r.found);
-
     const box = document.getElementById('detect-records');
     box.innerHTML = '';
-
     if (!rows.length) {
       box.innerHTML = '<div style="padding:1.5rem;text-align:center;font-size:12px;color:var(--muted);font-family:\'JetBrains Mono\',monospace;">No results for this filter.</div>';
       document.getElementById('det-count').textContent = '0 results';
       return;
     }
-
     rows.forEach((r, i) => {
       const div = document.createElement('div');
       div.className = 'detect-row';
@@ -891,7 +958,6 @@ textarea[readonly] { resize: vertical; color: var(--text2); }
         `<span class="det-badge ${r.found ? 'found' : 'notfound'}">${r.found ? 'found' : 'not found'}</span>`;
       box.appendChild(div);
     });
-
     document.getElementById('det-count').textContent = `${rows.length} result${rows.length !== 1 ? 's' : ''}`;
   }
 
@@ -905,6 +971,64 @@ textarea[readonly] { resize: vertical; color: var(--text2); }
       btn.innerText = 'Copied!';
       setTimeout(() => { btn.classList.remove('copied'); btn.innerText = orig; }, 1500);
     });
+  }
+
+  /* ══════════════════════════════════════════════
+     DNS A — new tool logic
+     Format: [dom],dns.[dom],TXT,Arecords:IP1;IP2;...
+     ══════════════════════════════════════════════ */
+
+  function dnsaPreview() {
+    const domains = parse('dnsa-domains');
+    const ips     = parse('dnsa-ips');
+    const preview = document.getElementById('dnsa-preview');
+
+    if (!domains.length && !ips.length) {
+      preview.innerHTML = '<span class="pm">// preview will appear here after you type</span>';
+      return;
+    }
+
+    const ipStr   = ips.length ? ips.join(';') : '...';
+    const showDom = domains.length ? domains[0] : 'yourdomain.com';
+    const more    = domains.length > 1 ? `<span class="pm"> … +${domains.length - 1} more row${domains.length > 2 ? 's' : ''}</span>` : '';
+
+    preview.innerHTML =
+      `<span class="pl">${esc(showDom)}</span>` +
+      `<span class="pm">,</span><span class="pk">dns.</span><span class="pl">${esc(showDom)}</span>` +
+      `<span class="pm">,TXT,</span><span class="pk">Arecords:</span>` +
+      `<span class="pv">${esc(ipStr)}</span>` +
+      more;
+  }
+
+  function generateDNSA() {
+    const domains = parse('dnsa-domains');
+    const ips     = parse('dnsa-ips');
+
+    if (!domains.length || !ips.length) {
+      document.getElementById('dnsa-err').classList.add('visible');
+      document.getElementById('dnsa-output').classList.remove('visible');
+      return;
+    }
+    document.getElementById('dnsa-err').classList.remove('visible');
+
+    const ipStr = ips.join(';');
+    const box   = document.getElementById('dnsa-records');
+    box.innerHTML = '';
+
+    domains.forEach((dom, idx) => {
+      const csv  = `${dom},dns.${dom},TXT,Arecords:${ipStr}`;
+      const html =
+        `<span class="p-domain">${esc(dom)}</span>` +
+        `<span style="color:var(--muted)">,</span>` +
+        `<span style="color:var(--lime)">dns.</span><span class="p-domain">${esc(dom)}</span>` +
+        `<span style="color:var(--muted)">,</span><span class="p-type">TXT</span>` +
+        `<span style="color:var(--muted)">,</span><span class="p-key">Arecords:</span>` +
+        ips.map(ip => `<span class="p-ip">${esc(ip)}</span>`).join('<span style="color:var(--muted)">;</span>');
+      addRow(box, idx, csv, html);
+    });
+
+    document.getElementById('dnsa-count').innerText = `${domains.length} record${domains.length !== 1 ? 's' : ''}`;
+    document.getElementById('dnsa-output').classList.add('visible');
   }
 </script>
 </body>
