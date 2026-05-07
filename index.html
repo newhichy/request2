@@ -32,6 +32,7 @@
   --red:       #ff6b6b;
   --lime:      #a8ff6b;
   --lime-dim:  #7ed43f;
+  --pink:      #ff7eb3;
 
   --text:      #dce8f5;
   --text2:     #8ea4bf;
@@ -134,15 +135,15 @@ h1 span { color: var(--teal); }
 }
 
 .tab-btn {
-  flex: 1; min-width: 80px; padding: 9px 10px;
+  flex: 1; min-width: 70px; padding: 9px 8px;
   background: transparent; border: 1px solid transparent;
   border-radius: 10px; font-family: 'Space Grotesk', sans-serif;
-  font-size: 12px; font-weight: 600; color: var(--muted);
+  font-size: 11.5px; font-weight: 600; color: var(--muted);
   cursor: pointer; transition: all 0.2s;
   display: flex; align-items: center; justify-content: center;
-  gap: 7px; letter-spacing: 0.2px; white-space: nowrap;
+  gap: 6px; letter-spacing: 0.2px; white-space: nowrap;
 }
-.tab-btn .tab-icon { font-size: 13px; }
+.tab-btn .tab-icon { font-size: 12px; }
 .tab-btn:hover { color: var(--text2); background: var(--surface2); }
 
 .tab-btn.active {
@@ -150,6 +151,7 @@ h1 span { color: var(--teal); }
   box-shadow: 0 1px 0 rgba(255,255,255,0.04) inset, 0 2px 8px rgba(0,0,0,0.2);
 }
 .tab-btn.active.t-spf    { color: var(--teal);   border-color: rgba(0,229,200,0.25); }
+.tab-btn.active.t-spf2   { color: var(--pink);   border-color: rgba(255,126,179,0.25); }
 .tab-btn.active.t-a      { color: var(--amber);  border-color: rgba(255,179,102,0.25); }
 .tab-btn.active.t-mx     { color: var(--purple); border-color: rgba(176,142,255,0.25); }
 .tab-btn.active.t-dmarc  { color: var(--dmarc);  border-color: rgba(255,204,160,0.25); }
@@ -198,6 +200,7 @@ select {
 
 textarea:focus, input:focus, select:focus { outline: none; background: var(--surface3); }
 .f-teal:focus   { border-color: rgba(0,229,200,0.5);    box-shadow: 0 0 0 3px rgba(0,229,200,0.07),    inset 0 1px 3px rgba(0,0,0,0.2); }
+.f-pink:focus   { border-color: rgba(255,126,179,0.5);  box-shadow: 0 0 0 3px rgba(255,126,179,0.07),  inset 0 1px 3px rgba(0,0,0,0.2); }
 .f-amber:focus  { border-color: rgba(255,179,102,0.5);  box-shadow: 0 0 0 3px rgba(255,179,102,0.07),  inset 0 1px 3px rgba(0,0,0,0.2); }
 .f-purple:focus { border-color: rgba(176,142,255,0.5);  box-shadow: 0 0 0 3px rgba(176,142,255,0.07),  inset 0 1px 3px rgba(0,0,0,0.2); }
 .f-orange:focus { border-color: rgba(255,159,46,0.5);   box-shadow: 0 0 0 3px rgba(255,159,46,0.07),   inset 0 1px 3px rgba(0,0,0,0.2); }
@@ -216,11 +219,23 @@ textarea:focus, input:focus, select:focus { outline: none; background: var(--sur
 .info-note strong { color: var(--teal); font-weight: 600; }
 .info-note::before { content: '⚡'; font-size: 13px; flex-shrink: 0; }
 
+.info-note.pink {
+  background: rgba(255,126,179,0.04); border-color: rgba(255,126,179,0.14);
+}
+.info-note.pink strong { color: var(--pink); }
+.info-note.pink::before { content: '📌'; }
+
 .info-note.lime {
   background: rgba(168,255,107,0.04); border-color: rgba(168,255,107,0.14);
 }
 .info-note.lime strong { color: var(--lime); }
 .info-note.lime::before { content: '🌐'; }
+
+.info-note.amber {
+  background: rgba(255,179,102,0.04); border-color: rgba(255,179,102,0.14);
+}
+.info-note.amber strong { color: var(--amber); }
+.info-note.amber::before { content: '📍'; }
 
 .btn-generate {
   width: 100%; padding: 14px 20px; border: none; border-radius: 10px;
@@ -239,6 +254,7 @@ textarea:focus, input:focus, select:focus { outline: none; background: var(--sur
 .btn-generate:hover   { filter: brightness(1.08); box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
 
 .btn-spf    { background: linear-gradient(135deg, #00c8b2, #00e5c8); color: #07141a; box-shadow: 0 2px 12px rgba(0,229,200,0.2); }
+.btn-spf2   { background: linear-gradient(135deg, #d05090, #ff7eb3); color: #1a040e; box-shadow: 0 2px 12px rgba(255,126,179,0.2); }
 .btn-a      { background: linear-gradient(135deg, #e09040, #ffb366); color: #1a0d04; box-shadow: 0 2px 12px rgba(255,179,102,0.2); }
 .btn-mx     { background: linear-gradient(135deg, #8060e0, #b08eff); color: #0c0818; box-shadow: 0 2px 12px rgba(176,142,255,0.2); }
 .btn-dmarc  { background: linear-gradient(135deg, #d09060, #ffcca0); color: #1e130a; box-shadow: 0 2px 12px rgba(255,204,160,0.2); }
@@ -274,6 +290,7 @@ textarea:focus, input:focus, select:focus { outline: none; background: var(--sur
   padding: 2px 9px; border-radius: 20px; font-weight: 500;
 }
 .rc-spf    { background: rgba(0,229,200,0.08);   border: 1px solid rgba(0,229,200,0.18);   color: var(--teal); }
+.rc-spf2   { background: rgba(255,126,179,0.08); border: 1px solid rgba(255,126,179,0.18); color: var(--pink); }
 .rc-a      { background: rgba(255,179,102,0.08); border: 1px solid rgba(255,179,102,0.18); color: var(--amber); }
 .rc-mx     { background: rgba(176,142,255,0.08); border: 1px solid rgba(176,142,255,0.18); color: var(--purple); }
 .rc-dmarc  { background: rgba(255,204,160,0.08); border: 1px solid rgba(255,204,160,0.18); color: var(--dmarc); }
@@ -333,6 +350,7 @@ textarea:focus, input:focus, select:focus { outline: none; background: var(--sur
 .p-value  { color: var(--p-value); }
 .p-dns    { color: var(--p-dns); }
 .p-lime   { color: var(--lime); }
+.p-pink   { color: var(--pink); }
 
 .checkbox-group { display: flex; gap: 10px; flex-wrap: wrap; margin: 14px 0; }
 .checkbox-item {
@@ -418,6 +436,18 @@ textarea[readonly] { resize: vertical; color: var(--text2); }
 .dnsa-preview .pk { color: var(--lime); }
 .dnsa-preview .pv { color: var(--p-ip); }
 .dnsa-preview .pm { color: var(--muted); }
+
+/* SPF v2 preview */
+.spf2-preview {
+  background: var(--surface); border: 1px solid rgba(255,126,179,0.12);
+  border-radius: 10px; padding: 13px 16px; margin-bottom: 1rem;
+  font-family: 'JetBrains Mono', monospace; font-size: 11px; line-height: 1.8;
+  color: var(--text2);
+}
+.spf2-preview .pl { color: var(--p-domain); }
+.spf2-preview .pk { color: var(--pink); }
+.spf2-preview .pv { color: var(--p-ip); }
+.spf2-preview .pm { color: var(--muted); }
 </style>
 </head>
 <body>
@@ -434,7 +464,7 @@ textarea[readonly] { resize: vertical; color: var(--text2); }
       </div>
       <div>
         <h1>Requests <span>Tools</span></h1>
-        <div class="tagline">SPF · A · MX · DMARC · Buckets · IP Joiner · Detector · DNS A</div>
+        <div class="tagline">SPF · SPF v2 · A · MX · DMARC · Buckets · IP Joiner · Detector · DNS A</div>
       </div>
     </div>
     <div class="header-badge"><span class="badge-dot"></span>DNS Toolkit</div>
@@ -442,6 +472,7 @@ textarea[readonly] { resize: vertical; color: var(--text2); }
 
   <div class="tabs">
     <button class="tab-btn active t-spf"    id="tab-spf"    onclick="switchTab('spf')">    <span class="tab-icon">📡</span> SPF</button>
+    <button class="tab-btn t-spf2"          id="tab-spf2"   onclick="switchTab('spf2')">   <span class="tab-icon">📌</span> SPF v2</button>
     <button class="tab-btn t-a"             id="tab-a"      onclick="switchTab('a')">      <span class="tab-icon">📍</span> A Records</button>
     <button class="tab-btn t-mx"            id="tab-mx"     onclick="switchTab('mx')">     <span class="tab-icon">✉️</span> MX Records</button>
     <button class="tab-btn t-dmarc"         id="tab-dmarc"  onclick="switchTab('dmarc')">  <span class="tab-icon">🛡️</span> DMARC</button>
@@ -451,7 +482,7 @@ textarea[readonly] { resize: vertical; color: var(--text2); }
     <button class="tab-btn t-dnsa"          id="tab-dnsa"   onclick="switchTab('dnsa')">   <span class="tab-icon">🌐</span> DNS A</button>
   </div>
 
-  <!-- SPF -->
+  <!-- SPF v1 (original) -->
   <div class="panel active" id="panel-spf">
     <div class="form-grid">
       <div class="field">
@@ -475,15 +506,75 @@ textarea[readonly] { resize: vertical; color: var(--text2); }
     </div>
   </div>
 
-  <!-- A Records -->
-  <div class="panel" id="panel-a">
-    <div class="form-grid">
-      <div class="field"><label>Domains</label><textarea id="a-domains" class="f-amber" rows="5" placeholder="ff.com"></textarea></div>
-      <div class="field"><label>Subdomains</label><textarea id="a-subs" class="f-amber" rows="5" placeholder="fe.ff.com"></textarea></div>
-      <div class="field full"><label>IPs <span class="hint">one per line</span></label><textarea id="a-ips" class="f-amber" rows="4" placeholder="185.44.78.232"></textarea></div>
+  <!-- SPF v2 — NEW -->
+  <div class="panel" id="panel-spf2">
+
+    <div class="info-note pink">
+      Output format: <strong>DOMAIN,subDOMAIN,TXT,"v=spf1 ip4:IP -all"</strong> — each line matched independently
     </div>
+
+    <!-- live preview -->
+    <div class="spf2-preview" id="spf2-preview">
+      <span style="color:var(--muted)">// preview will appear here after you type</span>
+    </div>
+
+    <div class="form-grid">
+      <div class="field">
+        <label>Domains <span class="hint">one per line</span></label>
+        <textarea id="spf2-domains" class="f-pink" rows="8"
+          placeholder="example.com&#10;mysite.org&#10;another.net"
+          oninput="spf2Preview()"></textarea>
+      </div>
+      <div class="field">
+        <label>Subdomains <span class="hint">one per line — matched by position</span></label>
+        <textarea id="spf2-subs" class="f-pink" rows="8"
+          placeholder="example.com&#10;mail.mysite.org&#10;another.net"
+          oninput="spf2Preview()"></textarea>
+      </div>
+      <div class="field full">
+        <label>IPs <span class="hint">one per line — matched by position to domains</span></label>
+        <textarea id="spf2-ips" class="f-pink" rows="5"
+          placeholder="192.3.193.120&#10;185.44.78.232&#10;67.222.128.54"
+          oninput="spf2Preview()"></textarea>
+      </div>
+    </div>
+
+    <button class="btn-generate btn-spf2" onclick="generateSPF2()">📌 Generate SPF v2 Records</button>
+    <div class="error-msg" id="spf2-err">Domains, subdomains, and IPs must all have the same number of lines.</div>
+
+    <div class="output-section" id="spf2-output">
+      <div class="output-header">
+        <div class="output-title">CSV Output <span class="rc-pill rc-spf2" id="spf2-count">0 records</span></div>
+        <button class="btn-copy" id="spf2-copy-btn" onclick="copyAll('spf2-records','spf2-copy-btn')">Copy all</button>
+      </div>
+      <div class="records-box" id="spf2-records"></div>
+    </div>
+  </div>
+
+  <!-- A Records (fixed) -->
+  <div class="panel" id="panel-a">
+
+    <div class="info-note amber">
+      Output: <strong>DOMAIN,subDOMAIN,A,IP</strong> — each line matched by position (domain line 1 + subdomain line 1 + IP line 1)
+    </div>
+
+    <div class="form-grid">
+      <div class="field">
+        <label>Domains <span class="hint">one per line</span></label>
+        <textarea id="a-domains" class="f-amber" rows="8" placeholder="example.com&#10;mysite.org&#10;another.net"></textarea>
+      </div>
+      <div class="field">
+        <label>Subdomains <span class="hint">one per line — matched by position</span></label>
+        <textarea id="a-subs" class="f-amber" rows="8" placeholder="example.com&#10;mail.mysite.org&#10;another.net"></textarea>
+      </div>
+      <div class="field full">
+        <label>IPs <span class="hint">one per line — matched by position to domains</span></label>
+        <textarea id="a-ips" class="f-amber" rows="5" placeholder="185.44.78.232&#10;67.222.128.54&#10;192.3.193.120"></textarea>
+      </div>
+    </div>
+
     <button class="btn-generate btn-a" onclick="generateA()">📍 Generate A Records</button>
-    <div class="error-msg" id="a-err">Domains and subdomains line count mismatch.</div>
+    <div class="error-msg" id="a-err">Domains, subdomains, and IPs must all have the same number of lines.</div>
     <div class="output-section" id="a-output">
       <div class="output-header">
         <div class="output-title">CSV Output <span class="rc-pill rc-a" id="a-count">0</span></div>
@@ -651,17 +742,12 @@ textarea[readonly] { resize: vertical; color: var(--text2); }
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════════════
-       DNS A — new tool
-       Output: [dom],dns.[dom],TXT,Arecords:IP1;IP2;...
-       ══════════════════════════════════════════════ -->
+  <!-- DNS A -->
   <div class="panel" id="panel-dnsa">
-
     <div class="info-note lime">
       Output format: <strong>[domain],dns.[domain],TXT,Arecords:IP1;IP2;...</strong> — same IPs applied to every domain
     </div>
 
-    <!-- live format preview -->
     <div class="dnsa-preview" id="dnsa-preview">
       <span class="pm">// preview will appear here after you type</span>
     </div>
@@ -696,7 +782,7 @@ textarea[readonly] { resize: vertical; color: var(--text2); }
 </div>
 
 <script>
-  const TABS = ['spf','a','mx','dmarc','bucket','joiner','detect','dnsa'];
+  const TABS = ['spf','spf2','a','mx','dmarc','bucket','joiner','detect','dnsa'];
 
   function switchTab(name) {
     TABS.forEach(t => {
@@ -729,7 +815,7 @@ textarea[readonly] { resize: vertical; color: var(--text2); }
     container.appendChild(row);
   }
 
-  /* ── SPF ── */
+  /* ── SPF v1 ── */
   function generateSPF() {
     let domains = parse('spf-domains'), subsRaw = parse('spf-subs');
     if (subsRaw.length === 0 && domains.length > 0) subsRaw = [...domains];
@@ -751,23 +837,115 @@ textarea[readonly] { resize: vertical; color: var(--text2); }
     document.getElementById('spf-output').classList.add('visible');
   }
 
-  /* ── A Records ── */
-  function generateA() {
-    const domains = parse('a-domains'), subs = parse('a-subs'), ips = parse('a-ips');
-    if (domains.length !== subs.length) {
-      document.getElementById('a-err').classList.add('visible');
-      document.getElementById('a-output').classList.remove('visible');
+  /* ══════════════════════════════════════════════
+     SPF v2 — new tool
+     Format: DOMAIN,subDOMAIN,TXT,"v=spf1 ip4:IP -all"
+     Each line matched by position: domain[i] + sub[i] + ip[i]
+     ══════════════════════════════════════════════ */
+
+  function spf2Preview() {
+    const domains = parse('spf2-domains');
+    const subs    = parse('spf2-subs');
+    const ips     = parse('spf2-ips');
+    const preview = document.getElementById('spf2-preview');
+
+    if (!domains.length && !ips.length) {
+      preview.innerHTML = '<span style="color:var(--muted)">// preview will appear here after you type</span>';
       return;
     }
-    document.getElementById('a-err').classList.remove('visible');
-    const ipStr = ips.join(';'), box = document.getElementById('a-records'); box.innerHTML = '';
+
+    const showDom = domains.length ? domains[0] : 'example.com';
+    const showSub = subs.length   ? subs[0]    : showDom;
+    const showIP  = ips.length    ? ips[0]     : '0.0.0.0';
+    const more    = domains.length > 1
+      ? `<span style="color:var(--muted)"> … +${domains.length - 1} more row${domains.length > 2 ? 's' : ''}</span>`
+      : '';
+
+    preview.innerHTML =
+      `<span class="pl">${esc(showDom)}</span>` +
+      `<span class="pm">,</span><span class="pl">${esc(showSub)}</span>` +
+      `<span class="pm">,TXT,</span>` +
+      `<span class="pk">"v=spf1 ip4:</span><span class="pv">${esc(showIP)}</span><span class="pk"> -all"</span>` +
+      more;
+  }
+
+  function generateSPF2() {
+    const domains = parse('spf2-domains');
+    const subs    = parse('spf2-subs');
+    const ips     = parse('spf2-ips');
+
+    const errEl  = document.getElementById('spf2-err');
+    const outEl  = document.getElementById('spf2-output');
+
+    // All three lists must have equal length
+    const counts = [domains.length, subs.length, ips.length];
+    const allSame = counts.every(c => c === counts[0]) && counts[0] > 0;
+
+    if (!allSame) {
+      errEl.classList.add('visible');
+      outEl.classList.remove('visible');
+      return;
+    }
+    errEl.classList.remove('visible');
+
+    const box = document.getElementById('spf2-records');
+    box.innerHTML = '';
+
+    domains.forEach((dom, idx) => {
+      const sub = subs[idx];
+      const ip  = ips[idx];
+      const spfValue = `v=spf1 ip4:${ip} -all`;
+      const csv  = `${dom},${sub},TXT,"${spfValue}"`;
+      const html =
+        `<span class="p-domain">${esc(dom)}</span>` +
+        `<span style="color:var(--muted)">,</span>` +
+        `<span class="p-sub">${esc(sub)}</span>` +
+        `<span style="color:var(--muted)">,</span><span class="p-type">TXT</span>` +
+        `<span style="color:var(--muted)">,</span>` +
+        `<span class="p-pink">"v=spf1 ip4:</span><span class="p-ip">${esc(ip)}</span><span class="p-pink"> -all"</span>`;
+      addRow(box, idx, csv, html);
+    });
+
+    document.getElementById('spf2-count').innerText = `${domains.length} record${domains.length !== 1 ? 's' : ''}`;
+    outEl.classList.add('visible');
+  }
+
+  /* ── A Records (fixed: per-line matching) ── */
+  function generateA() {
+    const domains = parse('a-domains');
+    const subs    = parse('a-subs');
+    const ips     = parse('a-ips');
+
+    const errEl = document.getElementById('a-err');
+    const outEl = document.getElementById('a-output');
+
+    // All three lists must have equal length
+    const counts = [domains.length, subs.length, ips.length];
+    const allSame = counts.every(c => c === counts[0]) && counts[0] > 0;
+
+    if (!allSame) {
+      errEl.classList.add('visible');
+      outEl.classList.remove('visible');
+      return;
+    }
+    errEl.classList.remove('visible');
+
+    const box = document.getElementById('a-records');
+    box.innerHTML = '';
+
     domains.forEach((dom, i) => {
-      const csv = `${dom},${subs[i]},TXT,Arecords:${ipStr}`;
-      const html = `<span class="p-domain">${esc(dom)}</span>,<span class="p-sub">${esc(subs[i])}</span>,<span class="p-type">TXT</span>,<span class="p-key">Arecords:</span>${ips.map(ip=>`<span class="p-aip">${esc(ip)}</span>`).join('<span style="color:var(--muted)">;</span>')}`;
+      const csv  = `${dom},${subs[i]},A,${ips[i]}`;
+      const html =
+        `<span class="p-domain">${esc(dom)}</span>` +
+        `<span style="color:var(--muted)">,</span>` +
+        `<span class="p-sub">${esc(subs[i])}</span>` +
+        `<span style="color:var(--muted)">,</span><span class="p-type">A</span>` +
+        `<span style="color:var(--muted)">,</span><span class="p-aip">${esc(ips[i])}</span>`;
       addRow(box, i, csv, html);
     });
-    document.getElementById('a-count').innerText = `${domains.length} record${domains.length!==1?'s':''}`;
-    document.getElementById('a-output').classList.add('visible');
+
+    document.getElementById('a-count').innerText = `${domains.length} record${domains.length !== 1 ? 's' : ''}`;
+    outEl.classList.add('visible');
   }
 
   /* ── MX Records ── */
@@ -973,11 +1151,7 @@ textarea[readonly] { resize: vertical; color: var(--text2); }
     });
   }
 
-  /* ══════════════════════════════════════════════
-     DNS A — new tool logic
-     Format: [dom],dns.[dom],TXT,Arecords:IP1;IP2;...
-     ══════════════════════════════════════════════ */
-
+  /* ── DNS A ── */
   function dnsaPreview() {
     const domains = parse('dnsa-domains');
     const ips     = parse('dnsa-ips');
